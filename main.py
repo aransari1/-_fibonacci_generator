@@ -6,10 +6,11 @@ from Backend import Fibonacci_Generator
 def Main_Function(page: ft.Page) -> None:
     page.title = "Fibonacci Generator"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.window.width = 350
-    page.window.height = 600
+    page.window.width = 360
+    page.window.height = 800
     page.scroll = ft.ScrollMode.ALWAYS
-
+    page.window.center()
+    page.window.maximized = True
 
     def Theme_Changer(e):
         page.theme_mode = (
@@ -27,12 +28,15 @@ def Main_Function(page: ft.Page) -> None:
 
     def Decrement_Function(e: ControlEvent) -> None:
         try:     
-            if not User_Range_Input.value.strip():
+            if not str(User_Range_Input.value).strip():
                 User_Range_Input.value=1
+                page.update()
             elif int(User_Range_Input.value) >0:
                 User_Range_Input.value = str(int(User_Range_Input.value) - 1)
+                page.update()
             elif int(User_Range_Input.value) <0:
                 User_Range_Input.value = str(0)
+                page.update()
             else:
                 pass
         except ValueError:
@@ -44,8 +48,10 @@ def Main_Function(page: ft.Page) -> None:
         try:     
             if not User_Range_Input.value.strip():
                 User_Range_Input.value=str(1)
+                page.update()
             else:
                 User_Range_Input.value = str(int(User_Range_Input.value) + 1)
+                page.update()
         except ValueError:
             pass
         page.update()
@@ -80,21 +86,21 @@ def Main_Function(page: ft.Page) -> None:
                 Generate_Button.disabled = True
                 page.update()
         else:
+            #Bug: the below label is showing even after clicking the + or - button and gets the value.
             Fibonacci_Showing_Label.value = "⚠️No input value!⚠️\nPlease give valid input"
             Fibonacci_Showing_Label.color = 'red'
             Fibonacci_Showing_Label.size = '13'
             Fibonacci_Showing_Label.text_align = 'CENTER'
             Generate_Button.disabled = True
-            
             page.update()
         page.update()
 
 
     def Generate_Click(e):
         Fibonacci_Series = Fibonacci_Generator(int(User_Range_Input.value))
-        Fibonacci_Showing_Label.value = ',\n'.join(map(str, Fibonacci_Series))
+        Fibonacci_Showing_Label.value = '\n'.join(map(str, Fibonacci_Series))
         Fibonacci_Showing_Label.color = 'indigo'
-        Fibonacci_Showing_Label.size = '10'
+        Fibonacci_Showing_Label.size = '15'
         Fibonacci_Showing_Label.text_align = 'LEFT'
         page.update()
 
@@ -140,46 +146,47 @@ def Main_Function(page: ft.Page) -> None:
     
     # Adding the widgets to the page.
     page.add(
-        Container(
-            content=ft.Column(
-                [
-                    Container(
-                        content=Main_Heading,
-                        padding=ft.padding.all(10)
+    ft.Container(
+        content=ft.Column(
+            [
+                ft.Container(
+                    content=Main_Heading,
+                    padding=ft.padding.all(10)
+                ),
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            Subtract_Button,
+                            User_Range_Input,
+                            Addtion_Button
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER
                     ),
-                    Container(
-                        content=ft.Row(
-                            [
-                                Subtract_Button,
-                                User_Range_Input,
-                                Addtion_Button
-                            ],
-                                alignment=ft.MainAxisAlignment.CENTER
-                        ),
-                            padding=ft.padding.all(10)
+                    padding=ft.padding.all(10)
+                ),
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            Generate_Button,
+                            Theme_Switch
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER
                     ),
-                        Container(
-                            content=ft.Row(
-                                [
-                                    Generate_Button,
-                                    Theme_Switch
-                                ],
-                                    alignment=ft.MainAxisAlignment.CENTER
-                                            ),
-
-                            padding=ft.padding.all(10)
-                                ),
-                        Container(
-                            content=Fibonacci_Showing_Label,
-                            padding=ft.padding.all(10)
-                                )
-                ],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
-            ),
-                padding=ft.padding.all(10)
-        )
+                    padding=ft.padding.all(10)
+                ),
+                ft.Container(
+                    content=Fibonacci_Showing_Label,
+                    padding=ft.padding.all(10),
+                    alignment=ft.alignment.top_left  # Align to the top left
+                )
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        ),
+        padding=ft.padding.all(10),
+        margin=ft.margin.only(top=150)  # Add margin from the top
     )
+)
 
 
 ft.app(Main_Function)
