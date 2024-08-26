@@ -2,35 +2,100 @@ import flet as ft
 from flet import TextField, ElevatedButton, Text, Row, Column, Container
 from flet_core.control_event import ControlEvent
 from Backend import Fibonacci_Generator
-ThemeChanger = 'light'
 
 def Main_Function(page: ft.Page) -> None:
     page.title = "Fibonacci Generator"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.window.width = 275
-    page.window.height = 400
-    #page.window.resizable = False
-    page.theme_mode = ThemeChanger
+    page.window.width = 350
+    page.window.height = 600
+    page.scroll = ft.ScrollMode.ALWAYS
 
-    
-    def Decrement_Function(e: ControlEvent) -> None:
-        User_Range_Input.value = str(int(User_Range_Input.value) - 1)
+
+    def Theme_Changer(e):
+        page.theme_mode = (
+            ft.ThemeMode.DARK
+            if page.theme_mode == ft.ThemeMode.LIGHT
+            else ft.ThemeMode.LIGHT
+        )
+        Theme_Switch.label = (
+            "Light theme" if page.theme_mode == ft.ThemeMode.LIGHT else "Dark theme"
+        )
         page.update()
 
+    page.theme_mode = ft.ThemeMode.LIGHT
+    Theme_Switch = ft.Switch(label="Light theme", on_change=Theme_Changer)
+
+    def Decrement_Function(e: ControlEvent) -> None:
+        try:     
+            if not User_Range_Input.value.strip():
+                User_Range_Input.value=1
+            elif int(User_Range_Input.value) >0:
+                User_Range_Input.value = str(int(User_Range_Input.value) - 1)
+            elif int(User_Range_Input.value) <0:
+                User_Range_Input.value = str(0)
+            else:
+                pass
+        except ValueError:
+            pass
+        page.update()
+
+
     def Increment_Function(e: ControlEvent) -> None:
-        User_Range_Input.value = str(int(User_Range_Input.value) + 1)
+        try:     
+            if not User_Range_Input.value.strip():
+                User_Range_Input.value=1
+            else:
+                User_Range_Input.value = str(int(User_Range_Input.value) + 1)
+        except ValueError:
+            pass
         page.update()
 
     def Validation(e: ControlEvent) -> None:
         if User_Range_Input.value.strip():
-            Generate_Button.disabled = False
+            try:
+                # Attempt to convert the input value to an integer
+                int_value = int(User_Range_Input.value)
+                Generate_Button.disabled = False
+                if int_value < 1:
+                    Fibonacci_Showing_Label.value = "⚠️Warning!⚠️\nRange can't be in zero or negative number"
+                    Fibonacci_Showing_Label.color = 'orange600'
+                    Fibonacci_Showing_Label.size = '12'
+                    Fibonacci_Showing_Label.text_align = 'CENTER'
+                    Generate_Button.disabled = True 
+                elif int_value > 1000:
+                    Fibonacci_Showing_Label.value = "⚠️Warning!⚠️\nEntering higher range may decrease your PC performance for a while"
+                    Fibonacci_Showing_Label.color = 'orange'
+                    Fibonacci_Showing_Label.size = '12'
+                    Fibonacci_Showing_Label.text_align = 'CENTER'
+                    page.update()
+                else:
+                    Fibonacci_Showing_Label.value = ''
+                page.update
+            except ValueError:
+                # If conversion fails, it's not an integer
+                Fibonacci_Showing_Label.value = "⚠️Wrong input value!⚠️\nPlease enter an integer value"
+                Fibonacci_Showing_Label.color = 'orange'
+                Fibonacci_Showing_Label.size = '12'
+                Fibonacci_Showing_Label.text_align = 'CENTER'
+                Generate_Button.disabled = True
+                page.update()
         else:
+            Fibonacci_Showing_Label.value = "⚠️No input value!⚠️\nPlease give valid input"
+            Fibonacci_Showing_Label.color = 'red'
+            Fibonacci_Showing_Label.size = '13'
+            Fibonacci_Showing_Label.text_align = 'CENTER'
             Generate_Button.disabled = True
+            
+            page.update()
         page.update()
+
 
     def Generate_Click(e):
         Fibonacci_Series = Fibonacci_Generator(int(User_Range_Input.value))
-        Fibonacci_Showing_Label.value = f"Fibonacci Series: {", ".join(map(str, Fibonacci_Series))}"
+        Fibonacci_Showing_Label.value = ',\n'.join(map(str, Fibonacci_Series))
+        Fibonacci_Showing_Label.color = 'indigo'
+        Fibonacci_Showing_Label.size = '10'
+        Fibonacci_Showing_Label.text_align = 'LEFT'
         page.update()
 
     Fibonacci_Showing_Label: Text = ft.Text(value='',
@@ -53,6 +118,7 @@ def Main_Function(page: ft.Page) -> None:
                                       color='pink'
                                       )
     User_Range_Input.on_change = Validation
+    
 
     Generate_Button: ElevatedButton = ElevatedButton(text='Generate',
                                                    width=135,
@@ -72,13 +138,7 @@ def Main_Function(page: ft.Page) -> None:
                                                    on_click=Increment_Function
                                                    )
     
-    
-    
-
-
-
-
-
+    # Adding the widgets to the page.
     page.add(
         Container(
             content=ft.Column(
@@ -99,7 +159,14 @@ def Main_Function(page: ft.Page) -> None:
                             padding=ft.padding.all(10)
                     ),
                         Container(
-                            content=Generate_Button,
+                            content=ft.Row(
+                                [
+                                    Generate_Button,
+                                    Theme_Switch
+                                ],
+                                    alignment=ft.MainAxisAlignment.CENTER
+                                            ),
+
                             padding=ft.padding.all(10)
                                 ),
                         Container(
@@ -114,6 +181,5 @@ def Main_Function(page: ft.Page) -> None:
         )
     )
 
-if __name__ == '__main__':
-    ft.app(target=Main_Function)
-    # ft.app(target=Main_Function, view=ft.WEB_BROWSER)
+
+ft.app(Main_Function)
