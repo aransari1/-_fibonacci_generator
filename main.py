@@ -43,7 +43,7 @@ def Main_Function(page: ft.Page) -> None:
     def Increment_Function(e: ControlEvent) -> None:
         try:     
             if not User_Range_Input.value.strip():
-                User_Range_Input.value=1
+                User_Range_Input.value=str(1)
             else:
                 User_Range_Input.value = str(int(User_Range_Input.value) + 1)
         except ValueError:
