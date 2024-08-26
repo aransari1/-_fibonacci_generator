@@ -6,8 +6,8 @@ from Backend import Fibonacci_Generator
 def Main_Function(page: ft.Page) -> None:
     page.title = "Fibonacci Generator"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.window.width = 360
-    page.window.height = 800
+    # page.window.width = 360
+    # page.window.height = 800
     page.scroll = ft.ScrollMode.ALWAYS
     page.window.center()
     page.window.maximized = True
@@ -41,12 +41,13 @@ def Main_Function(page: ft.Page) -> None:
                 pass
         except ValueError:
             pass
+        Validation(e)
         page.update()
 
 
     def Increment_Function(e: ControlEvent) -> None:
         try:     
-            if not User_Range_Input.value.strip():
+            if not str(User_Range_Input.value).strip():
                 User_Range_Input.value=str(1)
                 page.update()
             else:
@@ -54,6 +55,7 @@ def Main_Function(page: ft.Page) -> None:
                 page.update()
         except ValueError:
             pass
+        Validation(e)
         page.update()
 
     def Validation(e: ControlEvent) -> None:
@@ -62,12 +64,14 @@ def Main_Function(page: ft.Page) -> None:
                 # Attempt to convert the input value to an integer
                 int_value = int(User_Range_Input.value)
                 Generate_Button.disabled = False
+                page.update()
                 if int_value < 1:
                     Fibonacci_Showing_Label.value = "⚠️Warning!⚠️\nRange can't be in zero or negative number"
                     Fibonacci_Showing_Label.color = 'orange600'
                     Fibonacci_Showing_Label.size = '12'
                     Fibonacci_Showing_Label.text_align = 'CENTER'
-                    Generate_Button.disabled = True 
+                    Generate_Button.disabled = True
+                    page.update() 
                 elif int_value > 1000:
                     Fibonacci_Showing_Label.value = "⚠️Warning!⚠️\nEntering higher range may decrease your PC performance for a while"
                     Fibonacci_Showing_Label.color = 'orange'
@@ -86,7 +90,6 @@ def Main_Function(page: ft.Page) -> None:
                 Generate_Button.disabled = True
                 page.update()
         else:
-            #Bug: the below label is showing even after clicking the + or - button and gets the value.
             Fibonacci_Showing_Label.value = "⚠️No input value!⚠️\nPlease give valid input"
             Fibonacci_Showing_Label.color = 'red'
             Fibonacci_Showing_Label.size = '13'
@@ -143,7 +146,13 @@ def Main_Function(page: ft.Page) -> None:
                                                    icon_color=ft.colors.PINK,
                                                    on_click=Increment_Function
                                                    )
-    
+    Credits: Text = ft.Text(value='Developed by ABDURRAHMAN ANSARI',
+                                 text_align=ft.TextAlign.LEFT,
+                                 size=15,
+                                 weight=ft.FontWeight.W_500,
+                                 color='indigo'
+                                 )
+
     # Adding the widgets to the page.
     page.add(
     ft.Container(
@@ -177,7 +186,6 @@ def Main_Function(page: ft.Page) -> None:
                 ft.Container(
                     content=Fibonacci_Showing_Label,
                     padding=ft.padding.all(10),
-                    alignment=ft.alignment.top_left  # Align to the top left
                 )
             ],
             alignment=ft.MainAxisAlignment.CENTER,
@@ -187,6 +195,15 @@ def Main_Function(page: ft.Page) -> None:
         margin=ft.margin.only(top=150)  # Add margin from the top
     )
 )
+
+    credits_container = ft.Container(
+    content=ft.Text("Developed by: ABDURRAHMAN ANSARI"),
+    alignment=ft.alignment.bottom_center,
+    margin= ft.margin.only(top=225),
+    padding=ft.padding.all(10)
+)
+
+    page.add(credits_container)
 
 
 ft.app(Main_Function)
