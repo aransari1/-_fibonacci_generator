@@ -7,7 +7,7 @@ def Main_Function(page: ft.Page) -> None:
     page.title = "Fibonacci Generator"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     # page.window.width = 360
-    # page.window.height = 800
+    # page.window.height = 600
     page.scroll = ft.ScrollMode.ALWAYS
     page.window.center()
     page.window.maximized = True
@@ -199,7 +199,7 @@ def Main_Function(page: ft.Page) -> None:
     credits_container = ft.Container(
     content=ft.Text("Developed by: ABDURRAHMAN ANSARI"),
     alignment=ft.alignment.bottom_center,
-    margin= ft.margin.only(top=225),
+    # margin= ft.margin.only(top=125),
     padding=ft.padding.all(10)
 )
 
