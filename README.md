@@ -76,7 +76,7 @@ Here are some screenshots and a video demonstration of the CodeAlpha Fibonacci S
 
 
 ## Demo Video:
-[Fibonacci Series Generator](https://www.youtube.com/embed/PUdSQf1bfQY)
+[Fibonacci Series Generator Demo-YouTube](https://www.youtube.com/embed/PUdSQf1bfQY)
 
 
 ---
